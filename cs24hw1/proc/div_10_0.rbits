@@ -1,0 +1,8 @@
+A			# Dividend
+0			# Divisor
+1			# to set quetient to 0 intially, is always 1 for BNZ
+0			# to set remainder to divisor and loop constant
+80000000	# mask cosntant, to and with and determine if rem < 0
+0			# Temp
+0
+0

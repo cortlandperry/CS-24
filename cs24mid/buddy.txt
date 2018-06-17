@@ -1,0 +1,183 @@
+Buddy Allocator
+===============
+
+Put your answers for the buddy-allocator problem in this file.  You must keep
+lines to 80 characters or less, with the exception of the block pictures, which
+go slightly beyond the 80-character limit.
+
+For part d, you can describe the heap state as follows:
+
+Initial:
+
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+  |                                                                               |
+  |                                                                               |
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step i:  [alloc/free stuff]
+
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+  |                                                                               |
+  |                                                                               |
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Indicate boundaries between blocks with "|" characters.  Since the
+problem specifies a 16KiB heap, each "+----+" section represents 1KiB.
+
+At the start of each allocated or free block in the heap, put the
+following values:
+
+ * On the first line, put "O? _" where ? is the order of the block, and
+   "_" indicates a free block, or A/B/C/D/E indicates the name of the
+   allocated block.
+
+ * On the second line, put the size of the block:  for a free block, you
+   can put "??KB", where this is the size of the free block.  For a used
+   block, put "????", indicating the number of bytes in the used block.
+
+For example, after a 6000 byte allocation, you might have this:
+
+Step 1:  A = alloc(6000);
+
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+  |O8 A                                   |O8 _                                   |
+  |6000                                   |8KB                                    |
+  +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+==== PUT YOUR ANSWERS BELOW THIS LINE (which is 80 chars long) =================
+
+a)  Maximum size order of 2GiB heap
+2^31 bytes total space, Min block = 2^5 bytes
+Blocks allowed = 2^31 / 2^5 = 2^26
+This means the maximum order will be 26.
+The free list array will have size of 27, because each index in the free list
+represents the free blocks at one order.
+
+b)  Implementation of get_order_of_size()
+int get_order_of_size(int size) {
+    int order = 0;
+    int size_counter = MIN_BLOCK_SIZE;
+
+    // while our actual size is less than the size of the current order,
+    // we then increment our order and increase our size counter to represent
+    // our current order. Once we reach a size counter that is bigger, we end
+    // the loop.
+    while (size_counter < size) {
+        size_counter = size_counter * 2;
+        order += 1;
+    }
+    // return the order that we found
+    return order;
+}
+
+c)  Detecting failed allocation requests
+The allocator will not be able to satisfy an allocation request if there
+are no free blocks that are of a size equal to or larger than the size
+of the memory requested. Thus, the best way to determine if the allocator
+cannot return certain values will be by first determining the order of the
+size that was requested. Then, once we know the necessary order, the allocator
+can look into the free list array at the specified index, and then look through
+that list. If this list is empty, the allocator will then know that the r
+request cannot be satisfied, and thus we can have the allocator return NULL.
+
+d)  Sequence of allocations and deallocations for 16KiB heap
+Step initial:
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O9 _                                                                           |
+|16KB                                                                           |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 1: A = allocate(1400)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O6 A     |06 _     |07 _               |O8 _                                   |
+|1400    |2KB      |4KB                |8KB                                     |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 2: B = allocate(5500)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O6 A     |06 _     |07 _               |O8 B                                   |
+|1400     |2KB      |4KB                |5500                                   |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 3: C = allocate(800)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O6 A     |05 C|05 _|07 _               |O8 B                                   |
+|1400     |800 |1KB |4KB                |5500                                   |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 4: D = allocate(3200)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O6 A     |05 C|05 _|07 D               |O8 B                                   |
+|1400     |800 |1KB |3200               |5500                                   |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 5: free(A)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O6 _     |05 C|05 _|07 D               |O8 B                                   |
+|2KB      |800 |1KB |3200               |5500                                   |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 6: E = allocate(700)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O5 E|05 _|05 C|05 _|07 D               |O8 B                                   |
+|700 |1 KB|800 |1KB |3200               |5500                                   |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 7: free(B)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O5 E|05 _|05 C|05 _|07 D               |O8 _                                   |
+|700 |1 KB|800 |1KB |3200               |8KB                                    |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 8: free(C)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O5 E|05 _|06 _     |07 D               |O8 _                                   |
+|700 |1 KB|2KB      |3200               |8KB                                    |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+Step 9: free(E)
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O7 _               |07 D               |O8 _                                   |
+|4KB                |3200               |8KB                                    |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+STEP 10: free(D)
+
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+|O9 _                                                                           |
+|16KB                                                                           |
++----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+After Step 4, how many bytes are available to satisfy allocation requests?
+1024, aka 1KiB
+How many are unused by the program, but are not available?
+(2048 - 1400) + (1024 - 800) + (4096 - 3200) + (8192 - 5500) = 4460 unused
+but not available bytes.
+
+e)  Limitation of buddy allocators
+It is limited because even though you can allocate fast, there is a chunk
+percentage of unused space in the memory heap that will not be available.
+this would be most apparent if all our information was one byte larger
+that a power of 2, which would then cause us to use around only half of
+the available memory. This means the allocator is only effective when either
+all the memory chucks are almost but slightly less than a power of two, or
+you are not under memory constraints.
+
+f)  Placement strategy of buddy allocators
+Best fit is closest to the buddy allocator. This is because the buddy allocator
+determines which possible blocks are the smallest that can fit our input size.
+The difference between the best fit and the buddy allocator is that the block
+sizes are all predetermined, which is what causes all of the unused space.
+
+g)  Deferred coalescing
+A program that would benefit from deferred coalescing is one in which we have
+the entire memory unused, and then we need to allocate memory for a block of
+order 0. Then we free that information, and then add a new peice of
+information back in that is also order 0. (Or of a very small order). when
+this happens multiple times, we have to split a lot of blocks apart and
+then coalesce them all back together when it is free, and then split them
+back apart again. Deferred coalescing helps in this case because it will save
+you the time of having to put back together all of the blocks where you
+will just be splitting them back again immediately afterwards. It saves a lot
+of runtime because it then does not need to preform an operation of log(n) time
+complexity twice for each memory allocation.

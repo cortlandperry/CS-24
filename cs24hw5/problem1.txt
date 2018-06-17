@@ -1,0 +1,20 @@
+a) What miss rate are you seeing?
+
+3 * 10^9 (cycles/sec) / 7.5 * 10^8 (inst/sec) = 4 (cycles/instruction)
+
+4 (cycles/instruction) = h * 1 + (1 - h) * 100
+
+h = .96969696
+h is the hit rate.
+m = (1 - h) = 3.03 percent
+
+b)
+3 * 10^9 (cycles/sec) / 15 * 10^8 (inst/sec) = 2 (cycles/instruction)
+
+2 (cycles/instruction) = h * 1 + (1 - h) * 100
+h = 98.99%
+
+m = 1.01 %
+
+We would need to reduce our miss rate by m1 - m2 = 3.03 - 1.01 which is
+decrease miss rate by 2.02 %

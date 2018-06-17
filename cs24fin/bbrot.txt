@@ -1,0 +1,104 @@
+Buddhabrot Renderer
+===================
+
+1.  Size of `points` array
+The size of our array will be equal to sizeof(complex_t) * max_iters. We know
+that the size of complex_t is 8 bytes, because it contains only 2 floats,
+which are four bytes each which will be accessed in one lookup. Our maximum
+iteration limit is 2000, so the size of our array will be 16000 bytes. This
+size will fit in all three processor caches.
+
+
+2.  Memory reference pattern of `points` array
+The points array is referenced in the compute_bbrot_points function after
+it is created in the compute_bbrot function. The former
+function will sequentially write values to the points array. This menas that
+it has a stride of 1 and will exhibit good spatial locality, because things
+will be written in order in our points array. Additionally, this
+array will not have different data items multiple times because
+the information will be re-written on each call to compute_bbrot_point.
+
+
+3.  Hardware caches and `points` array
+Accesses to the points array should operate at L1 speeds. This is because
+our points array size fits completely inside of L1. Because the array fits
+completely inside of L1, and our stride is 1, and it also exhibits good
+spacial locality, we should expect that all of our array can be accessed in L1
+and thus it would operate very quickly. Thus, it will benefit a lot from
+the hardware caches.
+
+
+4.  Size of `array` image-data
+Our array is an array of 32 bit unsigned ints, with exactly (2048 x 2048)
+points in it. Thus, the amount of space 'array' is: 2048 x 2048 x 4 bytes
+= 16777216 bytes. This array will not fit entirely inside of any of the
+three caches.
+
+
+5.  Memory reference pattern of `array` image-data
+The 'array' image-data is accessed in record_point based on the x and
+y coordinate of the complex point. This is an almost random reference pattern
+however, because each complex point in the array that we will be recording
+in array will not be close to each other (because they represent the
+Mandelbrot path.) The stride of this data is then not even constant because
+it will change locations fairly randomly along the Mandelbrot path.
+The spatial locality of our calls to our array is also bad, because
+since our stride is not regular and instead randomly jumps around the array,
+we will not access pieces of information that are close to each other
+in the totality of the array. Also, the temporal locality is bad because points
+are extremely unlikely to be repeated through one Mandelbrot path.
+
+
+6.  Hardware caches and `array` image-data
+The hardware cache will not help the access of our 'array' image-data because
+of the lack of locality and lack of stride in the way that our array is
+accessed. Not only that, but the array is too large to fit in any of our
+3 caches, so we will not be able to acccess all the information with one
+cache consistantly. This would mean that we would get a high rate of misses
+when points are outside the choosen cache, and thus we can infer that
+our accesses will run at somewhere between L3 and main memory speeds.
+(because it will only miss approximately 50% of the time, but it cannot be
+predicted, because our array is twice the size of the L3 processor)
+
+
+7.  Multithreading and hardware caches
+When we run multiple threads, we need to be careful that mutliple threads do
+not access or change the same part of our arrays as they were before. Thus,
+the problem that would arise that is most relavent is that our
+information will possible become bottlenecked, because we do not know which
+points will be consistently accessed, and thus cannot dedicate different
+threads to different areas. As we increase the number of cores, this
+problems becomes more difficult to handle because there will just be more
+cores that will be trying to access the same points in our array.
+
+
+8.  Improvements to Buddhabrot Renderer
+1) The first thing that we can implement is we can try to make
+the array of image-data fit inside of a faster cache. A good way to do this
+is to split the array into multiple arrays so that each one can be accessed
+and used later with one cache lookup. The way to implement using multiple,
+smaller arrays is initializing each array to only be a section of the given
+image data. This way we can have each core manage a different section of the
+image data, each one can be some ordering of the array. Ex (First 10000
+image bytes). To implement this, we just look at the xy value that we
+have as our complex number, and then place it in the corresponding array
+properly at each time. Once we have these smaller arrays that we can
+fit in our cache memory, we will have less cache misses, and thus
+we will preform our accesses far quicker.
+
+2) The next thing I would improve is to try to improve the locality
+of the image-data array. To do this, I would first record all points that
+were recognized by the mandelbrot path in a seperate array, that we
+know will be smaller than 2000 elements each time because it will
+represent one path. The array will store the integer values of the points
+that we have accessed in our trip. We can then sort this array, so that
+we order each value starting with the lowest. Then, we will go through
+and increment each point in our image-data as we increment through
+our array. The array we created will be searched through with stride 1, and
+then we will be inputting values into our image-data that are as close
+together as possible, thus increasing the spacial locality of our access
+as well as we can with the set of points that are given by our mandelbrot path.
+This will improve the spacial locality of our access and then our cache will
+resultantly have a higher hit rate and therefore run faster. This shouldn't
+add any more cache issues because the array that we created will fit into
+the smallest cache that we have, so it will run very quickly and effectively.

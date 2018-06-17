@@ -1,0 +1,9 @@
+0a96	# R6-> R2 - R2  -- Set Quetient to 0 
+021f	# R7 -> R0 + R3	-- Set remainder to dividends
+0bcf	# R7 -> R7 - R1 -- remainder - divisor	START LOOP
+23e5	# R5 -> R7 AND R4 (R4 is mask, this and = 0 unless R7 is negative)
+2947	# BRANCH to END_LOOP if R5 is not 0 (R5 is prev line)
+1786	# r6 -> INCR R6 -- increase qouetient by 1
+2882	# BNZ R2 addr2 -- branch to START LOOP
+03cf	# END_LOOP: R7 -> R7 + R1 -- remainder = remainder + divisor
+3c00	# done --finish program

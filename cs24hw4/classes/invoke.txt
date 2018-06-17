@@ -1,0 +1,3 @@
+mov   (%r8), %r10       # dereference r8 and move to dummy register
+mov   (%r10), %r11      # get the information in r8 (now in r10) and move to r11
+call  (%r11)            # the info we want is now in r11, so we call that

@@ -1,0 +1,22 @@
+Answers to Practice Problem 3.6, CS:APP3e pp.192-193
+----------------------------------------------------
+
+1) leaq 6(%rax), %rdx
+this sets register rdx to (6 + x)
+
+2) leaq (%rax, %rcx), %rdx
+this sets register rdx to x + y
+
+3) leaq (%rax, %rcx, 4), %rdx
+this sets register rdx to x + 4 * y
+
+4) leaq 7(%rax, %rax, 8), %rdx
+this sets register rdx to 9x + 7
+
+5) leaq 0xA(, %rcx, 4), %rdx
+this sets register rdx to 4y + 10
+
+6) leaq 9(%rax, %rcx, 2), %rdx
+this sets register rdx to x + 2y + 9
+
+

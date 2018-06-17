@@ -1,0 +1,23 @@
+CS:APP3e Practice Problem 2.46, pp.111-112:
+-------------------------------------------
+
+A. What is the binary represenation of 0.1 - x?
+.0001100110011001100110011001100.... 
+- .00011001100110011001100
+= .00000000000000000000000110011001100..... (1100 repeats)
+
+B. What is the decimal representation of 0.1 - x?
+.00011001100110011001100 = 1 * 2^-4 + 2^-5 + 2^-8 + 2^-9 + 2^-12 + 2^-13
++ 2^-16 + 2^-17 + 2^-20 + 2^-21 = .09999990463256835938
+
+.1 - x =  9.5367 * 10^-8
+
+C. Each .1 seconds, we have the error specified above. In 100 hours, 
+we have 1 * 10 * 60 * 60 * 100 = 3600000 intervals passed. 
+Then, each interval we get the above error, so we have 
+3.6 * 10^6 * 9.5367 * 10^-8 seconds of error which is equal to
+.343322 seconds difference.
+
+D. 
+2000 * .34 error (seconds error times the speed) = 686 meters off!
+

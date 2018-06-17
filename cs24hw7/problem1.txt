@@ -1,0 +1,11 @@
+The program is intended to take results from both producers and then output
+them with our consumer. What currently happens, which is the problem with our
+current system, is that we only are printing values from producer 0. This is
+because of the way we manage our threads. Because we "yield" our threads,
+in bounded buffer add and take, we will produce two items in a row with our
+producers, and then only consumer one item. As a result of this, the
+consumer only takes one item off of the queue each time it is called, the
+results from only one thread are outputted. This means that because we
+are using cooperative thread execution, it causes us to never use the
+results of one of the two producer threads, because their come one after
+the other and we only call the producer once.

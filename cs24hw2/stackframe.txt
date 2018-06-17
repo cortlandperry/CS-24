@@ -1,0 +1,15 @@
+Stack Contents of fact(3)
+-------------------------
+
+Address     Value       Description
+--------    --------    ------------------------------------
+0x1008      unknown     we have no idea what this starts with
+0x1000      unknown     this value will refer to where the factorial function was initially called from
+0x0FF8      $3          this is pushed on because our first argument is 3
+0x0FF0      0x2020      this is when we call fact(2), where we need to return to after fact(2) is done computing
+0x0FE8      $2          this is pushed on to save n - 1 = 2
+0x0FE0      0x2020      this is when we call fact(1), where we need to return to after fact(1) is done computing
+0x0FD8      $1          this is pushed on to save n - 1 = 1
+0x0FD0      0x2020      this is pushed on when we call fact(0), it is where we need to return to after we finish running fact(0)
+
+

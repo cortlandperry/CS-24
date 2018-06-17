@@ -1,0 +1,42 @@
+a) Describe what your allocator does in each of the following cases.
+
+1) If myfree() is called on an address that did not originate from myalloc()?
+    If myfree is called on an address that did not originate from myalloc,
+we would just change the value in memory from a positive sign to a negative sign at the 4 byte sequence that myfree was called for. There will not be info here because it would be empty because it didn't come from myalloc. Then, nothing would happen, and our allocator would get mad
+because we would try to access information that didn't exist to try and
+turn it negative. Myfree would attempt to coalesce blocks in the
+sequence, but nothing would happen because none of the headers would be
+changed since it did not call anaddress that originated from myalloc.
+
+2) If it is contained in an address contained in a memory block, it will do
+a similar thing as the previous example, except there will be information
+in the location that we will be trying to free. The only thing that myfree
+will do to this information is turn the value at the pointer refrencced 
+minus the head size into the positive of itself. (it will only
+change if it is read as negative) It is possible this read will cause the
+computer to read over multiple memory blocks as well. As a result of this,
+our program will corrupt information for other entries in the code and 
+mess everything up. Finally, Myfree would attempt to coalesce blocks in the sequence, but nothing would happen because none of the headers would
+be changed since it did not call anaddress that originated from myalloc,
+so nothing would happen.
+
+3) An address that has already been freed?
+Nothing would happen here, because our value in that address would be
+positive if it was freed, and if we try to free it again, we will 
+just set the header integer to the absolute value of what it was, but
+since it was positive because we just freed it, we would not change anything. When we try to coalese blocks the second time, nothing new 
+would happen in our second free as well, because all possible coalesing
+would have occured during our first free instead of our next one. 
+
+b) A good way to prevent these kinds of errors is if we stored a global
+array or pointer at the beginning of all our memory that stored informatio
+about the current list of headers or current list of blocks that we have
+in our memory. Once we have this, then we can check whether the address
+that is passed into myfree is in this initial block. We then compare it 
+to that address, and then if it is there then we know that it is a valid
+address. To maintain this structure it would restrict the total number
+of blocks in memory we could have, because it would be difficult to resize
+the size of this block, but we can just make sure to add information
+to this block after each allocation and deallocation of memory, assuming
+it doesn't get to big and overflow the allowed space.
+

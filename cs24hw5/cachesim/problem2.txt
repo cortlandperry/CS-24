@@ -1,0 +1,24 @@
+d) We ran on the command line:
+./heaptest 32:256:1
+
+There are blocks of size 32 bytes. We have 1 line per cache set, so each block
+will be the cache set. Thus, we will have 256 total cache sets.
+
+the cache miss rate was: 2.40%
+
+e) We ran on the command line:
+./heaptest 32:1:256
+
+We know we only have 1 cache set in this case. Thus, the set must contain all
+of the lines, which we know is the total size divided by the size of the blocks,
+which is 256.
+
+the cache miss rate was: 2.45%
+
+g) running
+./heaptest 32:256:1
+the new cache miss rate was: 2.40%
+
+running
+./heaptest 32:1:256
+the cache miss rate was: 2.26%

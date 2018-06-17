@@ -1,0 +1,27 @@
+Bugs in rl_decode() function:
+-----------------------------
+
+Error 1: In find_space_done, Ben sets r10 to 0 by using the XOR function. 
+Once he sets it to 0, in our write loop we are adding r10 each time to 
+rax, but it is always 0, so we are not moving bl into anything. In order
+to fix this, we need to increment r10 each time so we will be writing to
+different registers.
+
+Error 2: In find_space_done we call malloc. The malloc function will do
+some funky things to callee-save registers than just rdi. In order to
+fix this, we need to push the register values that malloc may change onto
+our stack, and then pop them off the stack once malloc is done using them
+that way in the larger scheme of our program they do not change. These
+registers are rdi, rsi, and rdx. Ben does not account for this issue, and
+only pushes rdi onto the stack instead of all three. 
+
+Error 3: Our comment says that all of the counts are in the odd memory 
+locations only. In our find_space_loop, we look at every memory location
+instead of just the odd numbered one because we add 1 to rcx. To change
+this, we add 2 to rcx each time instead.
+
+Error 4: The final error is that our %bl register will be overflowing when
+we add things to it. In order to make sure that bl does not overflow, we
+will need to store overflow in ebx. To store this, we need to add 256 to
+another register every time we overflow, and then keep the remained in bl.
+

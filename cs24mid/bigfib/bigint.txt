@@ -1,0 +1,62 @@
+------------------------------------------------------------------------------
+1)  Pseudocode for __add_bigint
+
+if (size = 0) {
+return 1
+}
+for (i = 0; i < size; i ++) {
+  addwithcarry a[i] + b[i] into a[i]
+}
+
+if (carry_flag = 0 ) {    /* unsigned overflow, if the final one was too big */
+return 1
+}
+return 0
+
+
+Assembly Psuedo:
+#r10 is our loop var, decrements. Use jnz to avoid carry flag issues
+#r11 is where we load a into
+
+r10 = size
+jnz ADD_LOOP
+mov 1 eax
+ret
+
+ADD_LOOP:
+
+mov a r11
+adc r11 b
+leaq  8(a), a       # incrementing each of these by 8, to go to the next addr
+leaq  8(b), b
+
+dec r10             #decrease loop counter and loop back
+jnz r10, ADD_LOOP
+
+
+FINISH_LOOP:
+jnc done    #if there is no carry, we return 1, otherwise it overflows, ret 0
+mov 0 eax
+ret
+
+DONE:
+mov 1 eax
+ret
+
+------------------------------------------------------------------------------
+3)  Largest n for fib(n) using four 64-bit quadwords for bigint:
+The largest n is 370. fib(370) will equal: 94,611,056,096,305,838,013,295,371,
+573,764,256,526,437,182,762,229,865,607,320,618,320,601,813,254,535
+
+------------------------------------------------------------------------------
+4)  Number of 64-bit quadwords required for fib(2000), and value of fib(2000):
+
+22 quadwords needed.
+fib(2000) = 4,224,696,333,392,304,878,706,725,602,341,482,782,579,852,840,250,
+681,098,010, 280,137,314,308,584,370,130,707,224,123,599,639,141,511,088,446,
+087,538,909,603,607,640,194,711,643,596,029,271,983,312,598,737,326,253,555,802,
+606,991,585,915,229,492,453,904,998,722,256,795,316,982,874,482,472,992,263,901,
+833,716,778,060,607,011,615,497,886,719,879,858,311,468,870,876,264,597,369,086,
+722,884,023,654,422,295,243,347,964,480,139,515,349,562,972,087,652,656,069,529,
+806,499,841,977,448,720,155,612,802,665,404,554,171,717,881,930,324,025,204,312,
+082,516,817,125

@@ -1,0 +1,28 @@
+Answer to Problem 3.63, CS:APP3e pp.314-315
+-------------------------------------------
+
+- Compute Index: n - 60
+- Compate Index: 5
+- If greater than 66, go to default location
+- we find cases from the jump table, starting from our compute index
+- the locations where each case jumps to are found by where each jump points
+to in the code
+
+
+switch(n) {
+    case 60:
+    case 62:
+        result = 8 * result;
+        break;
+    case 63:
+        result = result >> 3;
+        break;
+    case 64:
+        result = (result << 4) - result;
+    case 65:
+        result = result * result;
+    default:
+        result = result + 75;
+        break;
+           
+}

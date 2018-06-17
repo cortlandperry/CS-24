@@ -1,0 +1,93 @@
+35
+a = ['str']
+35
+a = ['str']
+gc()
+a = ['str', 'hi', 'nig']
+gc()
+6
+7
+3
+a = 5
+gc()
+lst = ['str']
+lst = ['str']
+gc()
+lst = ['str']
+gc()
+5
+lst = ['str']
+gc()
+lst = ['str']
+gc()
+5
+lst = ['str']
+gc()
+lst = ['str']
+gc()
+a
+5
+3
+gc()
+lst2 = ['5', '3']
+gc()
+['5', '3']
+gc()
+5
+4
+3
+lst3 = [3, 5, 6]
+gc()
+lst3 = [3, 5, 6]
+5
+6
+7
+lst2 = [3, 5]
+gc()
+lst3 = [3, 5, 6]
+4
+5
+6
+lst2 = [3, 5]
+gc()
+lst2 = [3, 5]
+4
+3
+lst3 = [3, 5, 6]
+gc()
+2
+3
+lst ['str']
+lst = ['str']
+gc()
+'abc'
+longer = 'abcdefghijkl'
+gc()
+'abc'
+longer = 'abcdefghijkl'
+gc()
+7
+gc()
+'abc'
+longer = 'abcdefghijkl'
+gc()
+'abc'
+longer = 'abcdefghijkl'
+gc()
+[1, 2]
+lst = [1, 2, 3]
+gc()
+'abc'
+longer = 'abcdefghijkl'
+gc()
+gc()
+longer = 'abcdefghijkl'
+gc()
+'abc'
+gc()
+'abc'
+z = 'zzzzzzz'
+gc()
+'abc'
+z = 'zzzzzzz'
+gc()

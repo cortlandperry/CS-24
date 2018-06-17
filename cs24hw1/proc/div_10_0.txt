@@ -1,0 +1,5 @@
+With this set of inputs, our program will loop forever. This is because our loop changes
+when we subtract our divisor from our divedend, and we wait for that value to become
+less than 0 after repeating it many times. Since our divisor is 0, our value will never
+change, and our program will continue executing because our "remainder" value
+will always be 10 and never change. (This was stored in r7).

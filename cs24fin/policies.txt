@@ -1,0 +1,80 @@
+Page Replacement Policies and Scan Resistance
+=============================================
+
+1a.  Characterization of FIFO policy
+FIFO does not pay attention to either recency or frequency of access, because
+the order of the queue is not affected by either thing, they are just
+evicted in the order of when they were loaded.
+
+
+1b.  Characterization of Second Chance / Clock policy
+This places importance on recency of access, because each time a page is
+accessed it will be placed on the back of the queue, thus meaning that a page
+that was accessed the farthest time ago will be evicted.
+
+
+1c.  Characterization of Aging policy
+The aging policy balances recency vs frequency of access very well. This is
+because the age value tracks both how old it is (by the top bit of the age)
+and how often it has been accessed recently (by the amount of 1's in the
+age value). The recency of access is slightly more important than
+frequency (because the top bit carries the most weight), but then
+frequency is used as a "tiebreaker" for pages.
+
+
+2.  Susceptibility of Aging policy to scans
+Once a scan occurs, in the aging policy every page that is in the scan will
+have the highest age value. Thus, if something was very frequently accessed but
+not in the scan, and then we needed to immediately evict a page, it would lose
+that useful page and flush it out of memory, which will increase page-fault
+rate. Additionally, the pages within
+the scan will have a higher age value than anything not in the scan, so
+we need to access many new pages in order for any of them to be evicted,
+which will not be good. Thus, the aging policy is not very effective for scans,
+and because it shares the same problems as LRU it is not scan-resistant.
+
+3a.  Comparison of 2Q to LRU-2
+The 2Q policy is similar to LRU-2. The similarity comes from the way we evict
+in 2Q. Since all pages that have only been accessed one time are in our
+first A1 queue, and we will always evict those pages first, it is the
+same as labeling the accessed value -infinity. Thus, 2Q will accurately
+evict anything with only one access before anything else. The difference
+between the two policies comes from the Am queue. The Am queue will work if
+everything is accessed only twice, but if things are accessed more than two
+times, pages are placed at the front of the queue from one access, so the
+pages then are evicted based on which one was least recently accessed, instead
+of which one was accessed two beforehand.
+
+
+3b.  Design a version of 2Q that uses a timer interrupt and "accessed" bit
+When a page is accessed, we will update its access bit to be 1. We do not do
+anything except for updating its access bit when a page is accessed.
+Periodically, our timer interrupt occurs. When this happens, we will look
+through every page that is currently loaded, and perform the following:
+
+1) If a page has an access bit of 0, do nothing
+2) If a page has an access bit of 1, and is not in either A1 or AM, we will add
+it to the front of A1, and revert its access bit to 0
+3) If a page has an access bit of 1, and is in A1 or AM, we will add it to the
+front of AM, and revert its access bit to 0
+
+Now, when pages have to be evicted, (in case of a page fault) they are evicted
+first from the back of A1, and then second from the back of AM if no pages
+are in A1.
+
+
+
+3c.  Comparison of your policy to 2Q
+My policy approximates the version of 2Q very well. The main impact that this
+policy will have is how often the timer will interrupt. If the timer is
+interrupting at a similar rate to how often each page is accessed, it works
+almost perfectly. However, it is possible that in my policy, a page can
+be accessed multiple times between two timer interrupts. If it was not
+accessed at all beforehand, it would be placed in the A1 queue, when it
+should be placed in the AM queue, but we would not be able to detect
+multiple accesses. My policy will handle pages part of a scan very well,
+because each one would be looked at once, and then not accessed again for a
+long time, thus they all would be placed in the A1 queue and then
+would be evicted first which is what we would want. Pages not in a scan
+can be accessed and replaced well according to 2Q as long as there is no
+"double access" like what was described earlier. 

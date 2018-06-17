@@ -1,0 +1,40 @@
+Expression:  n = n & (n - 1)
+----------------------------
+What does this expression do to n?
+This expression will remove the first (lowest valued) one bit in our 
+number n. Additionally, It will be 0 when it is a power of two, and when
+ it isn't 0 it is not.
+
+How does it work?
+This works because of how binary subtraction works. If we have some
+number 101100, when we subtract one, we will get 101011. Basically, the 
+lowest valued one that appears will be replaced with a 0, and then
+everything before it will be replaced with a 1. Then when this happens,
+and we and the two bit sequences together, the lowest few digits of the
+first value are 0, so our result will have them all be 0, and then the
+second value has the following number as 0, so that one will also be 0.
+The rest of the number however stays the same, so our final result will
+be 101000, which just is removing the lowest valued 1 from our bitmap. 
+
+
+
+(*
+This works because every power of two in bits is written in the form 
+1 followed by many 0's ex (1000000). When you subtract one from this 
+equation, we will get a integer that contains only 1's, but has a 0 in
+place where our orignial int had a 1. (0111111) Thus, when you and these 
+two values together, you get 0000000. If it is not a power of two,
+there will be more than one 1 in our bit representation, and so it will
+not return 0 because it just will unset the lowest one in our bitwise
+representation.
+*)
+
+
+How might it provide a faster way to count one-bits in a value?
+We can preform this operation until our result is 0, and count how many
+times we preform the operation. We can just put this in a loop until we
+ reach 0, because we  will remove 1's from our bitmap x times until the 
+last call will be a power of two, and in that case we will have counted 
+every one in our bitmap.
+
+

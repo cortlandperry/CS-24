@@ -1,0 +1,40 @@
+Explicit Allocator Scenario:  Allocation Fails under Best-Fit but not First-Fit
+===============================================================================
+Our memory heap has 7KB, and we preform these operations on it:
+1) A = allocate(3KB)
+2) B = allocate(2KB)
+3) free(A)
+
+Now, our memory heap looks like this:
+Free->3KB, B->2KB, Free-> 2KB
+
+From this point, The steps we will take that cause best-fit to fail and
+first-fit to pass will be:
+1) C = allocate(1KB)
+2) free(B)
+3) D = allocate(6KB)
+
+If we try to then allocate C, a size of 1KB, best-fit algorithm will place
+C into the free block at the end of the memory heap. Our memory will then look
+like so:
+
+Free->3KB, B->2KB, C-> 1KB, Free-> 1KB
+
+Now, we will free B, and our resulting memory heap looks like: (because of the
+coalescing strategy that we have).
+Free->5KB, C-> 1KB, Free-> 1KB
+
+Now, when we try to add 6KB to this memory heap, best-fit will fail because
+there are no available 6KB slots to free from.
+
+Now, lets look at these same steps using first-fit. Using first fit, when we
+allocate C, we add it into the first free block. This gives usa heap that looks
+like:
+C-> 1KB, Free->2KB, B->2KB, Free-> 2KB
+
+Now, when we free B, we coalesce both free memory spots on the sides of B, with
+the newly freed data from B, and thus we get:
+C-> 1KB, Free-> 6KB
+
+Now, we can clearly allocate 6KB into this memory heap succsessfully, and thus
+best-fit fails while first-fit does not fail.

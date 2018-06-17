@@ -1,0 +1,9 @@
+What does the assembly code do?
+-------------------------------
+
+This code takes x, multiplies it by three, and adds twelve to it. Then it multiplies that whole expression by x, and then subtracts 17 from the new expression. The total computation will be: 
+((3x + 12) * x)  - 17
+
+
+
+

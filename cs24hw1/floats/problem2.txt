@@ -1,0 +1,34 @@
+Part A:
+-------
+Why are these results different?
+We have many decimal points in our various numbers, and thus after each calculation
+the computer will round its numbers slightly. However, if we add them in a different
+order, it changes the slight rounding after each calculation, and thus will change
+our final result, which is why each order has differences. 
+
+
+Which is the most accurate, and why?
+The one where you order it in increasing value will be the most accurate, because it
+will start off registering more values of the small numbers, and it will keep them, 
+so then when you add them with bigger numbers you will lose less floating point values
+when you round because there will be less order of magnitude differences between
+the numbers you add. 
+
+What kinds of inputs would also cause the "most accurate" approach to exhibit
+ large errors? 
+Inputs that are very far apart, meaning that even after we order our input, there are
+large gaps between adjacent numbers which would make our rounding errors more
+apparent. Also, if we have more numbers, there is a bigger chance that we make
+rounding errors between two of the numbers.
+
+Part B:
+-------
+I implemented a pairwise summation algorithm. This is better because we will always
+be adding numbers that are similar in magnitude, on average, compared to adding
+numbers in order. This will prevent us from caring about large gaps between 
+ordered input, because if we are adding groups of 2, then 4, etc.. we will have 
+more accuracy within these groups because the numbers are closer together and
+thus have less error. 
+
+
+

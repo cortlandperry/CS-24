@@ -1,0 +1,41 @@
+Explicit Allocator Scenario:  Allocation Fails under First-Fit but not Best-Fit
+===============================================================================
+I was not sure if I had to write the steps to reach the given scenario, so I
+provided them anywas:
+
+Steps that lead to failure:
+We have a 7KB memory heap.
+1) A = allocate(1KB)
+2) B = allocate(3KB)
+3) C = allocate(1KB)
+4) Free(B)
+
+At this point, our memory heap looks like so:
+
+A -> 1KB, Free->3KB, C->1KB, Free->2KB
+
+Now, we will add a block of size 2KB, call it D.
+D = allocate (2KB)
+
+In First Fit, this will be added to the large free block between A and C, and
+our memory heap will look like so:
+
+A -> 1KB, D-> 2KB, Free->1KB, C->1KB, Free->2KB
+
+Now, if we wanted to allocate a block E of size 3KB, we would get an
+allocation failure because there are no blocks of size 3KB available.
+
+However, if we used Best-Fit, we would avoid this allocation failure.
+Starting from when we freed B,
+
+A -> 1KB, Free->3KB, C->1KB, Free->2KB
+
+When we allocate block D, best_fit will insert D into the last free spot instead
+of the first one, because it better fits D. Thus, after inserting D our
+memory heap looks like this:
+
+A -> 1KB, Free->3KB, C->1KB, D->2KB
+
+Now, we can successfully allocate memory for something of size 3KB, into the
+free space between A and C. Thus, there is no allocation failure for best-fit
+while there is an allocation failure for first-fit.

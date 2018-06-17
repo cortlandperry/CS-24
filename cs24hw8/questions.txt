@@ -1,0 +1,59 @@
+Answers to HW8 Questions
+========================
+
+a)  How to detect when a page is accessed?
+To detect when a page is accessed, we will first, using mprotect() we will
+set all of the permissions of our virtual memory to not allow any access.
+This will mean when we first attempt to access any page, a seg fault
+(access memory) will be thrown. Once this is attempted to access we will
+then update a flag that will mark that the page is accessed, and change
+the permission to the page to allow reads, and then we will read the page.
+Thus, when we seg fault for the first time when it is tried to be accessed,
+we will mark our page as accessed.
+
+b)  How to detect when a page becomes dirty?
+For us to tell when a page becomes dirty, we just have to determine whether
+a page has been exclusively written too. Using the same method we had before
+we can then only worry about if a write request. Thus, we will check if our
+permission is read only when we seg fault, (because we can only seg fault there
+if we are trying to write) and then we will update a  flag that will say
+that our page has been written to, and we change the permission on the page
+to write and read, similarly to how we checked it was accessed.
+
+f)  Page-load rate of "test_matrix -m 1024 1000" using RANDOM policy:
+53194 page loads were required
+
+g)  Page Replacement Policy #1 (fill in the information below)
+
+Name of policy you chose to implement:
+FIFO policy
+
+Below, give the command-line for invoking the matrix-test program for a
+1000x1000 matrix, with a maximum of 1024 resident pages.  (If multiple
+steps are required, list them all here.)
+
+  >>> ./test_matrix_fifo -m 1024 1000
+
+
+Give the resulting page-load rate of the above command: 47944
+
+If you have any additional information to share about your policy, please
+share it here.  Please keep your comments brief; you don't need to repeat
+what the assignment says about the policy here.
+
+
+h)  Page Replacement Policy #2 (if you implemented two policies)
+
+Name of policy you chose to implement: CLRU
+
+Below, give the command-line for invoking the matrix-test program for a
+1000x1000 matrix, with a maximum of 1024 resident pages.  (If multiple
+steps are required, list them all here.)
+
+  >>> ./test_matrix_clru -m 1024 1000
+
+Give the resulting page-load rate of the above command: 6835
+
+If you have any additional information to share about your policy, please
+share it here.  Please keep your comments brief; you don't need to repeat
+what the assignment says about the policy here.
